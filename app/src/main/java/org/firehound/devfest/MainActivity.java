@@ -1,5 +1,6 @@
 package org.firehound.devfest;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,13 +23,22 @@ import io.agora.rtc.video.VideoCanvas;
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private RtcEngine rtcEngine;
-    private boolean isBroadcaster;
-    private int uid;
+    private boolean isBroadcaster = true;
+
+    private final void toastWrapper(final String msg) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initRtcEngine();
     }
 
     private void initRtcEngine() {
@@ -57,26 +67,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onConnectButtonClicked(View view) {
-        initRtcEngine();
         if (isBroadcaster) {
-            uid = 1;
             rtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER);
         }
         else {
-            uid = 2;
             rtcEngine.setClientRole(Constants.CLIENT_ROLE_AUDIENCE);
         }
         EditText text = findViewById(R.id.channel_name);
+        if (text.getText().toString().equals("")) {
+            Toast.makeText(this, "You must enter a channel name!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         rtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
         rtcEngine.setAudioProfile(Constants.AUDIO_PROFILE_SPEECH_STANDARD, Constants.AUDIO_SCENARIO_DEFAULT);
-        rtcEngine.joinChannel(null, "demo", "Fek aff", uid);
+        rtcEngine.joinChannel(null, String.valueOf(text.getText()), "Fek aff",0);
     }
 
     IRtcEngineEventHandler rtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
             super.onJoinChannelSuccess(channel, uid, elapsed);
-            Toast.makeText(MainActivity.this, "Connected successfully!", Toast.LENGTH_SHORT).show();
+            Log.d(LOG_TAG, "Joined channel " + channel);
+            toastWrapper("Joined channel " + channel);
+        }
+
+        @Override
+        public void onLeaveChannel(RtcStats stats) {
+            super.onLeaveChannel(stats);
+            toastWrapper("Left channel successfully!");
+        }
+
+        @Override
+        public void onUserJoined(int uid, int elapsed) {
+            super.onUserJoined(uid, elapsed);
+            toastWrapper("A user has joined the channel.");
         }
     };
+
+    public void onDisconnectClicked(View view) {
+        rtcEngine.leaveChannel();
+    }
 }

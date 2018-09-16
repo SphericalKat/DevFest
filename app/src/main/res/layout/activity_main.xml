@@ -12,8 +12,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="42dp"
         android:ems="10"
+        android:hint="Enter channel name"
         android:inputType="text"
-        android:text="Enter channel name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,10 +41,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="#17ff32"
+            android:buttonTint="@color/colorAccent"
             android:checked="true"
-            android:text="Broadcaster"
-            android:onClick="onButtonClicked"/>
+            android:onClick="onButtonClicked"
+            android:text="Two-way audio communication" />
 
         <RadioButton
             android:id="@+id/audio_audience"
@@ -52,8 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="false"
-            android:text="Audience member"
-            android:onClick="onButtonClicked"/>
+            android:onClick="onButtonClicked"
+            android:text="One-way audio communication" />
     </RadioGroup>
 
     <TextView
@@ -63,10 +63,22 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="27dp"
         android:fontFamily="sans-serif"
-        android:text="What is your role?"
+        android:text="Communication type"
         android:textAppearance="@android:style/TextAppearance.Material"
+        android:textSize="18sp"
         android:typeface="normal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_name" />
+
+    <Button
+        android:id="@+id/button_disconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="onDisconnectClicked"
+        android:text="Disconnect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/join_channel" />
 
 </android.support.constraint.ConstraintLayout>
