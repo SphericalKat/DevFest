@@ -2,18 +2,18 @@ language: android
 
 jdk:
   - openjdk8
-  - oraclejdk8
 
 sudo: true
 
 android:
   components:
     - tools
-    - platform-tools
-    - tools
     - build-tools-28.0.2
-    -  extra-google-m2repository
+    - extra-google-m2repository
     - extra-android-m2repository
+    - android-28
+    licenses:
+    - ".+"
 
 script:
   - "./gradlew clean assembleDebug"
