@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
-            throw new RuntimeException("Fatal error while initing RTCEngine" + Log.getStackTraceString(e));
+            throw new RuntimeException("Fatal error while initializing RTCEngine" + Log.getStackTraceString(e));
         }
     }
 

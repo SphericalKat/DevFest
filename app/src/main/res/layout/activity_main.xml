@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -26,7 +25,9 @@
         android:text="Connect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/colorAccent" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
@@ -79,6 +80,8 @@
         android:text="Disconnect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/join_channel" />
+        app:layout_constraintTop_toBottomOf="@+id/join_channel"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/colorAccent" />
 
 </android.support.constraint.ConstraintLayout>
