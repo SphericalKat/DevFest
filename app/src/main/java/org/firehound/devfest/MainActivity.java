@@ -1,6 +1,8 @@
 package org.firehound.devfest;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,8 +18,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private RtcEngine rtcEngine;
     private boolean isBroadcaster = true;
+    private static final String FIRST_START = "org.firehound.devfest.FIRST_START";
+    public static final int REQ_CODE = 1;
 
-    private final void toastWrapper(final String msg) {
+    private void toastWrapper(final String msg) {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -29,7 +33,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main);
+
+        //First start welcome activity
+        boolean firstStart = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(FIRST_START, true);
+        if (firstStart) {
+            Intent intent = new Intent(this, MainIntroActivity.class);
+            startActivityForResult(intent, REQ_CODE);
+        }
+
         initRtcEngine();
     }
 
@@ -105,5 +118,18 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         RtcEngine.destroy();
         rtcEngine = null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CODE) {
+            if (resultCode == RESULT_OK) {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(FIRST_START, false).apply();
+            } else {
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(FIRST_START, true);
+                finish();
+            }
+        }
     }
 }
