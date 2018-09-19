@@ -1,41 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="25dp">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/main_activity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/colorPrimary"
+        android:elevation="4dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+    </android.support.v7.widget.Toolbar>
 
     <EditText
         android:id="@+id/channel_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
-        android:hint="Enter channel name"
+        android:fontFamily="@font/product_sans_family"
+        android:gravity="center"
+        android:hint="@string/enter_channel_name"
         android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/main_activity_toolbar" />
 
     <Button
         android:id="@+id/join_channel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="@color/colorAccent"
+        android:fontFamily="@font/product_sans_family"
         android:onClick="onConnectButtonClicked"
-        android:text="Connect"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        android:text="@string/connect"
         android:textColor="@color/white"
-        android:backgroundTint="@color/colorAccent" />
+        app:layout_constraintStart_toStartOf="@+id/button_disconnect"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        android:layout_marginTop="225dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
             android:id="@+id/audio_broadcast"
@@ -44,8 +64,9 @@
             android:layout_weight="1"
             android:buttonTint="@color/colorAccent"
             android:checked="true"
-            android:onClick="onButtonClicked"
-            android:text="Two-way audio communication" />
+            android:fontFamily="@font/product_sans_family"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/two_way_audio_communication" />
 
         <RadioButton
             android:id="@+id/audio_audience"
@@ -53,35 +74,38 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="false"
-            android:onClick="onButtonClicked"
-            android:text="One-way audio communication" />
+            android:fontFamily="@font/product_sans_family"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/one_way_audio_communication" />
     </RadioGroup>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="9dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="27dp"
-        android:fontFamily="sans-serif"
-        android:text="Communication type"
+        android:fontFamily="@font/product_sans_family"
+        android:text="@string/communication_type"
         android:textAppearance="@android:style/TextAppearance.Material"
+        android:textColor="@color/colorAccent"
         android:textSize="18sp"
         android:typeface="normal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_name" />
+        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintStart_toStartOf="@+id/radioGroup" />
 
     <Button
         android:id="@+id/button_disconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="@color/colorAccent"
+        android:fontFamily="@font/product_sans_family"
         android:onClick="onDisconnectClicked"
-        android:text="Disconnect"
+        android:text="@string/disconnect"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/join_channel"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/colorAccent" />
+        app:layout_constraintTop_toBottomOf="@+id/join_channel" />
 
 </android.support.constraint.ConstraintLayout>

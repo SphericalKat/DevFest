@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,11 +22,32 @@ public class MainActivity extends AppCompatActivity {
     private static final String FIRST_START = "org.firehound.devfest.FIRST_START";
     public static final int REQ_CODE = 1;
 
-    private void toastWrapper(final String msg) {
+    IRtcEngineEventHandler rtcEventHandler = new IRtcEngineEventHandler() {
+        @Override
+        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+            super.onJoinChannelSuccess(channel, uid, elapsed);
+            Log.d(LOG_TAG, "Joined channel " + channel);
+            toastWrapper("Joined channel " + channel, Toast.LENGTH_SHORT);
+        }
+
+        @Override
+        public void onLeaveChannel(RtcStats stats) {
+            super.onLeaveChannel(stats);
+            toastWrapper("Left channel successfully!", Toast.LENGTH_SHORT);
+        }
+
+        @Override
+        public void onUserJoined(int uid, int elapsed) {
+            super.onUserJoined(uid, elapsed);
+            toastWrapper("A user has joined the channel.", Toast.LENGTH_SHORT);
+        }
+    };
+
+    private void toastWrapper(final String msg, final int length) {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), msg, length).show();
             }
         });
     }
@@ -35,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main);
+
+        //Toolbar
+        Toolbar toolbar = findViewById(R.id.main_activity_toolbar);
+        setSupportActionBar(toolbar);
 
         //First start welcome activity
         boolean firstStart = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(FIRST_START, true);
@@ -57,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onButtonClicked(View view) {
+    public void onRadioButtonClicked(View view) {
         boolean checked = ((RadioButton) view).isChecked();
         switch (view.getId()) {
             case R.id.audio_broadcast:
@@ -88,27 +114,6 @@ public class MainActivity extends AppCompatActivity {
         rtcEngine.joinChannel(null, String.valueOf(text.getText()), "Fek aff",0);
     }
 
-    IRtcEngineEventHandler rtcEventHandler = new IRtcEngineEventHandler() {
-        @Override
-        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-            super.onJoinChannelSuccess(channel, uid, elapsed);
-            Log.d(LOG_TAG, "Joined channel " + channel);
-            toastWrapper("Joined channel " + channel);
-        }
-
-        @Override
-        public void onLeaveChannel(RtcStats stats) {
-            super.onLeaveChannel(stats);
-            toastWrapper("Left channel successfully!");
-        }
-
-        @Override
-        public void onUserJoined(int uid, int elapsed) {
-            super.onUserJoined(uid, elapsed);
-            toastWrapper("A user has joined the channel.");
-        }
-    };
-
     public void onDisconnectClicked(View view) {
         rtcEngine.leaveChannel();
     }
@@ -127,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(FIRST_START, false).apply();
             } else {
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(FIRST_START, true);
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(FIRST_START, true).apply();
                 finish();
             }
         }

@@ -3,4 +3,13 @@
     <string name="agora_app_id">e2aadf0756a148e6870c4b2d053b591d</string>
     <string name="title_1">DevFest App</string>
     <string name="desc_1">App made for DevFest 2018 using the Agora SDK</string>
+    <string name="enter_channel_name">Enter channel name</string>
+    <string name="connect">Connect</string>
+    <string name="two_way_audio_communication">Two-way audio communication</string>
+    <string name="one_way_audio_communication">One-way audio communication</string>
+    <string name="communication_type">Communication type</string>
+    <string name="disconnect">Disconnect</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
