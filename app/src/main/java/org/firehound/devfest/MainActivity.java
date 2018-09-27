@@ -3,17 +3,18 @@ package org.firehound.devfest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+
+import io.agora.rtc.RtcEngine;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private static final String FIRST_START = "org.firehound.devfest.FIRST_START";
     public static final int REQ_CODE = 1;
+    public static RtcEngine rtcEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +36,20 @@ public class MainActivity extends AppCompatActivity {
 
         //BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_menu);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                android.support.v4.app.Fragment selectedFragment = null;
-                switch (item.getItemId()) {
-                    case R.id.nav_home:
-                        break;
-                    case R.id.nav_audio:
-                        selectedFragment = new AudioBroadcastFragment();
-                        break;
-                    case R.id.nav_video:
-                        selectedFragment = new VideoBroadcastFragment();
-                        break;
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, selectedFragment).commit();
-                return true;
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            android.support.v4.app.Fragment selectedFragment = null;
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    break;
+                case R.id.nav_audio:
+                    selectedFragment = new AudioBroadcastFragment();
+                    break;
+                case R.id.nav_video:
+                    selectedFragment = new VideoBroadcastFragment();
+                    break;
             }
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, selectedFragment).commit();
+            return true;
         });
     }
 
