@@ -7,6 +7,9 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import io.agora.rtc.RtcEngine;
 
 
@@ -15,10 +18,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String FIRST_START = "org.firehound.devfest.FIRST_START";
     public static final int REQ_CODE = 1;
     public static RtcEngine rtcEngine;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        firebaseAuth = FirebaseAuth.getInstance();
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main);
 
@@ -64,5 +69,15 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user == null) {
+            //Do something
+        }
+
     }
 }

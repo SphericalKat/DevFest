@@ -3,4 +3,5 @@
     <color name="colorAccent">#448AFF</color>
     <color name="white">#FFF</color>
     <color name="black">#000</color>
+    <color name="gray">#8b9191</color>
 </resources>
