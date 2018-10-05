@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.agora.rtc.RtcEngine;
 
 
@@ -19,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQ_CODE = 1;
     public static RtcEngine rtcEngine;
     private FirebaseAuth firebaseAuth;
+    public static List<String> admins = new ArrayList<>();
+    public static boolean isAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +46,14 @@ public class MainActivity extends AppCompatActivity {
 
         //BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_menu);
+        bottomNavigationView.setSelectedItemId(R.id.nav_audio);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             android.support.v4.app.Fragment selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.nav_home:
                     break;
                 case R.id.nav_audio:
-                    selectedFragment = new AudioBroadcastFragment();
+                        selectedFragment = new AudioBroadcastFragment();
                     break;
                 case R.id.nav_video:
                     selectedFragment = new VideoBroadcastFragment();
@@ -76,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user == null) {
-            //Do something
+            startActivityForResult(new Intent(this, MainIntroActivity.class), REQ_CODE);
+        } else {
+            isAdmin = admins.contains(firebaseAuth.getCurrentUser().getUid());
         }
 
     }

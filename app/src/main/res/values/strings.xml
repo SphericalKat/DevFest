@@ -17,4 +17,9 @@
     <string name="video">Video</string>
     <string name="auth_email_text">Email</string>
     <string name="auth_password_text">Password</string>
+    <string name="channelwide_broadcast">Channel-wide broadcast</string>
+
+    <string-array name="admins">
+        <item>jEPyptVyo6Zznrkh8FGzSRM5eOJ3</item>
+    </string-array>
 </resources>

@@ -4,4 +4,7 @@
     <color name="white">#FFF</color>
     <color name="black">#000</color>
     <color name="gray">#8b9191</color>
+    <color name="accentLight">#ef70cf</color>
+    <color name="transparent">#00000000</color>
+    <color name="red">#ff1a1a</color>
 </resources>
