@@ -3,9 +3,9 @@ package org.firehound.devfest;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,29 +21,28 @@ import com.google.firebase.auth.FirebaseUser;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.IRtcEngineEventHandler;
-import io.agora.rtc.RtcEngine;
 
+import static org.firehound.devfest.MainActivity.rtcEngine;
 import static org.firehound.devfest.Utils.toastWrapper;
 
 
 public class AudioBroadcastFragment extends Fragment {
-    private static final String TAG = "AudioBroadcastFragment";
-    private RtcEngine rtcEngine;
-    private boolean isBroadcaster = true;
+    private static final String TAG = "AudioBroadcastFragment";;
+    private boolean isBroadcaster = false;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     private TextView connectionStatus, broadcastCardText, userText;
     private EditText channelName;
-    private FloatingActionButton disconnectButton;
+    private FragmentActivity fragmentActivity;
 
 
     private IRtcEngineEventHandler rtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
             super.onJoinChannelSuccess(channel, uid, elapsed);
-            Log.d(TAG, "Joined channel " + channel);
-            toastWrapper(getActivity(),"Joined channel " + channel, Toast.LENGTH_SHORT);
-            getActivity().runOnUiThread(() -> {
+            Log.d(TAG, "Joined channel " + channel + "" + fragmentActivity.toString());
+            toastWrapper(fragmentActivity,"Joined channel " + channel, Toast.LENGTH_SHORT);
+            fragmentActivity.runOnUiThread(() -> {
                 channelName.setEnabled(false);
                 connectionStatus.setText("Connection active");
                 if (isBroadcaster) {
@@ -58,8 +57,9 @@ public class AudioBroadcastFragment extends Fragment {
         @Override
         public void onLeaveChannel(RtcStats stats) {
             super.onLeaveChannel(stats);
-            toastWrapper(getActivity(),"Left channel successfully!", Toast.LENGTH_SHORT);
-            getActivity().runOnUiThread(() -> {
+            Log.d(TAG, "Left channel successfully.");
+            toastWrapper(fragmentActivity,"Left channel successfully!", Toast.LENGTH_SHORT);
+            fragmentActivity.runOnUiThread(() -> {
                 connectionStatus.setText("Connection inactive");
                 channelName.setEnabled(true);
             });
@@ -67,23 +67,16 @@ public class AudioBroadcastFragment extends Fragment {
 
         }
     };
-
     public AudioBroadcastFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            rtcEngine = RtcEngine.create(getActivity(), getString(R.string.agora_app_id),rtcEventHandler);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        rtcEngine.addHandler(rtcEventHandler);
         View view = inflater.inflate(R.layout.fragment_audio_nav, container, false);
         ImageButton connectButton = view.findViewById(R.id.join_channel);
         TextView broadcastSwitchText = view.findViewById(R.id.broadcast_type_switchtext);
@@ -93,8 +86,7 @@ public class AudioBroadcastFragment extends Fragment {
         broadcastCardText = view.findViewById(R.id.broadcast_type_cardtext);
         connectionStatus = view.findViewById(R.id.connection_details);
         Switch broadcastSwitch = view.findViewById(R.id.broadcast_type_switch);
-        disconnectButton = view.findViewById(R.id.disconnect_fab);
-
+        FloatingActionButton disconnectButton = view.findViewById(R.id.disconnect_fab);
 
         //Listeners
         disconnectButton.setOnClickListener(v -> {
@@ -129,16 +121,9 @@ public class AudioBroadcastFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
-    }
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        fragmentActivity = getActivity();
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        RtcEngine.destroy();
-        rtcEngine = null;
     }
 }

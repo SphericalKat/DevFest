@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
         dataBinding {
             enabled = true
         }
@@ -40,7 +41,7 @@ dependencies {
     implementation 'io.agora.rtc:full-sdk:2.3.0'
 
     //Material-intro
-    implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
+    implementation 'com.heinrichreimersoftware:material-intro:1.6'
 
     //Firebase libraries
     implementation 'com.google.firebase:firebase-auth:16.0.3'

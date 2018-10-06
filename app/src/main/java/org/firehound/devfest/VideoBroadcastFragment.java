@@ -4,13 +4,14 @@ package org.firehound.devfest;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -21,6 +22,9 @@ import io.agora.rtc.Constants;
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
+import io.agora.rtc.video.VideoEncoderConfiguration;
+
+import static org.firehound.devfest.MainActivity.rtcEngine;
 
 
 /**
@@ -36,6 +40,8 @@ public class VideoBroadcastFragment extends Fragment {
             Utils.toastWrapper(getActivity(),"Joined channel " + channel, Toast.LENGTH_SHORT);
         }
 
+
+
         @Override
         public void onLeaveChannel(RtcStats stats) {
             super.onLeaveChannel(stats);
@@ -46,28 +52,19 @@ public class VideoBroadcastFragment extends Fragment {
         public void onUserJoined(int uid, int elapsed) {
             super.onUserJoined(uid, elapsed);
             Utils.toastWrapper(getActivity(), "A user has joined the channel.", Toast.LENGTH_SHORT);
+            UID = uid;
         }
     };
-    private RtcEngine rtcEngine;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
+    private FragmentActivity fragmentActivity;
+    private int UID;
 
 
     public VideoBroadcastFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            rtcEngine = RtcEngine.create(getActivity(), getString(R.string.agora_app_id),rtcEventHandler);
-        } catch (Exception e) {
-           Log.e(TAG, e.toString());
-        }
-        rtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_COMMUNICATION);
-        rtcEngine.enableVideo();
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,12 +76,28 @@ public class VideoBroadcastFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rtcEngine.addHandler(rtcEventHandler);
+        rtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_COMMUNICATION);
+        //rtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER);
+        rtcEngine.enableVideo();
+        setVideoProfile();
+        rtcEngine.switchCamera();
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_video_nav, container, false);
-        Button connectButton = view.findViewById(R.id.connect_video);
+        FloatingActionButton connectButton = view.findViewById(R.id.connect_video);
+        FloatingActionButton disconnectButton = view.findViewById(R.id.disconnect_video);
+        FrameLayout videoContainer = view.findViewById(R.id.video_container);
+        disconnectButton.setOnClickListener(l -> {
+            rtcEngine.leaveChannel();
+            videoContainer.removeAllViews();
+        });
         connectButton.setOnClickListener(l ->{
-            setupLocalVideo(view);
-            rtcEngine.joinChannel(null, "demo", null, Utils.getUniqueInteger(currentUser.getUid()));
+            SurfaceView surfaceView = RtcEngine.CreateRendererView(getActivity().getBaseContext());
+            surfaceView.setZOrderMediaOverlay(true);
+            videoContainer.addView(surfaceView);
+            rtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_FIT, 0));
+            rtcEngine.joinChannel(null, "1000", "Extra data", 0);
         });
 
 
@@ -92,18 +105,17 @@ public class VideoBroadcastFragment extends Fragment {
         return view;
     }
 
-    private void setupLocalVideo(View view){
-        FrameLayout container = view.findViewById(R.id.video_container);
-        SurfaceView surfaceView = RtcEngine.CreateRendererView(getActivity().getBaseContext());
-        surfaceView.setZOrderMediaOverlay(true);
-        container.addView(surfaceView);
-        rtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_FIT, Utils.getUniqueInteger(currentUser.getUid())));
+    private void setVideoProfile() {
+        VideoEncoderConfiguration.ORIENTATION_MODE orientationMode = VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT;
+        VideoEncoderConfiguration.VideoDimensions dimensions = new VideoEncoderConfiguration.VideoDimensions(1080, 1920);
+        VideoEncoderConfiguration videoEncoderConfiguration = new VideoEncoderConfiguration(dimensions, VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15, VideoEncoderConfiguration.STANDARD_BITRATE, orientationMode);
+        rtcEngine.setVideoEncoderConfiguration(videoEncoderConfiguration);
+
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        RtcEngine.destroy();
-        rtcEngine = null;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        fragmentActivity = getActivity();
     }
 }

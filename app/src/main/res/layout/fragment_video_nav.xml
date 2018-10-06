@@ -1,25 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VideoBroadcastFragment">
+    tools:context=".VideoBroadcastFragment"
+    tools:layout_editor_absoluteY="25dp">
 
     <FrameLayout
-        android:layout_width="match_parent"
+        android:id="@+id/video_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/connect_video"
-        android:id="@+id/video_container"/>
+        android:layout_marginTop="29dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/connect_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="14dp"
-        android:backgroundTint="@color/colorAccent"
-        android:text="Connect"
-        android:textColor="@color/white" />
+        android:layout_marginBottom="54dp"
+        android:clickable="true"
+        android:src="@drawable/ic_video_call"
+        app:backgroundTint="@color/green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/disconnect_video"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</RelativeLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/disconnect_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="54dp"
+        android:clickable="true"
+        app:backgroundTint="@color/red"
+        android:src="@drawable/ic_videocam_off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/connect_video" />
+
+</android.support.constraint.ConstraintLayout>
