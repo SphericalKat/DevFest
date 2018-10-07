@@ -21,12 +21,12 @@
         android:id="@+id/connect_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="54dp"
+        android:layout_marginBottom="55dp"
         android:clickable="true"
         android:src="@drawable/ic_video_call"
         app:backgroundTint="@color/green"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/disconnect_video"
+        app:layout_constraintEnd_toStartOf="@+id/flip_camera"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -34,12 +34,24 @@
         android:id="@+id/disconnect_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="54dp"
+        android:layout_marginBottom="55dp"
         android:clickable="true"
-        app:backgroundTint="@color/red"
         android:src="@drawable/ic_videocam_off"
+        app:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/flip_camera" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/flip_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="55dp"
+        android:src="@drawable/ic_switch_camera"
+        app:backgroundTint="@color/yellow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/disconnect_video"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/connect_video" />
 

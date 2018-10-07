@@ -62,7 +62,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/channelnamedisplaydonotedit" />
 
             <TextView
-                android:id="@+id/connection_details"
+                android:id="@+id/connection_details_unpriv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -75,14 +75,14 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/account_details"
+                android:id="@+id/account_details_unpriv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:text="by amolele@gmail.com"
                 android:textAppearance="@style/TextAppearance.AppCompat.Inverse"
-                app:layout_constraintStart_toStartOf="@+id/connection_details"
-                app:layout_constraintTop_toBottomOf="@+id/connection_details" />
+                app:layout_constraintStart_toStartOf="@+id/connection_details_unpriv"
+                app:layout_constraintTop_toBottomOf="@+id/connection_details_unpriv" />
 
             <TextView
                 android:id="@+id/channelnamedisplaydonotedit"
@@ -92,8 +92,8 @@
                 android:text="Channel"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/account_details"
-                app:layout_constraintTop_toBottomOf="@+id/account_details"
+                app:layout_constraintStart_toStartOf="@+id/account_details_unpriv"
+                app:layout_constraintTop_toBottomOf="@+id/account_details_unpriv"
                 app:layout_constraintVertical_bias="1.0" />
 
             <ImageButton
@@ -122,11 +122,11 @@
                 android:text="Receiving mode"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/connection_details"
+                app:layout_constraintBottom_toBottomOf="@+id/connection_details_unpriv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/connection_details"
-                app:layout_constraintTop_toTopOf="@+id/connection_details"
+                app:layout_constraintStart_toEndOf="@+id/connection_details_unpriv"
+                app:layout_constraintTop_toTopOf="@+id/connection_details_unpriv"
                 app:layout_constraintVertical_bias="0.0" />
 
         </android.support.constraint.ConstraintLayout>

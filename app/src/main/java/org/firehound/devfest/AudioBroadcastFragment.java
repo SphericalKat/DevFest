@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
@@ -28,7 +29,7 @@ import static org.firehound.devfest.Utils.toastWrapper;
 
 public class AudioBroadcastFragment extends Fragment {
     private static final String TAG = "AudioBroadcastFragment";;
-    private boolean isBroadcaster = false;
+    private boolean isBroadcaster = false, isEmergencyChannel = false;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     private TextView connectionStatus, broadcastCardText, userText;
@@ -78,13 +79,14 @@ public class AudioBroadcastFragment extends Fragment {
         currentUser = firebaseAuth.getCurrentUser();
         rtcEngine.addHandler(rtcEventHandler);
         View view = inflater.inflate(R.layout.fragment_audio_nav, container, false);
+        CheckBox emergencyChannel = view.findViewById(R.id.emergency_channel);
         ImageButton connectButton = view.findViewById(R.id.join_channel);
         TextView broadcastSwitchText = view.findViewById(R.id.broadcast_type_switchtext);
-        userText = view.findViewById(R.id.account_details);
+        userText = view.findViewById(R.id.account_details_unpriv);
         userText.setText("user: "+currentUser.getEmail());
         channelName = view.findViewById(R.id.channel_name_edittext);
         broadcastCardText = view.findViewById(R.id.broadcast_type_cardtext);
-        connectionStatus = view.findViewById(R.id.connection_details);
+        connectionStatus = view.findViewById(R.id.connection_details_unpriv);
         Switch broadcastSwitch = view.findViewById(R.id.broadcast_type_switch);
         FloatingActionButton disconnectButton = view.findViewById(R.id.disconnect_fab);
 
@@ -94,9 +96,11 @@ public class AudioBroadcastFragment extends Fragment {
         });
         connectButton.setOnClickListener(v -> {
             String channel = channelName.getText().toString();
-            if (channel.equals("")) {
+            if (channel.equals("") && !isEmergencyChannel) {
                 Toast.makeText(getActivity(), "Channel name cannot be empty.", Toast.LENGTH_SHORT).show();
                 return;
+            } else if (isEmergencyChannel) {
+                channel = getString(R.string.emergency_channel);
             }
             if (isBroadcaster) {
                 rtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER);
@@ -105,7 +109,7 @@ public class AudioBroadcastFragment extends Fragment {
             }
             rtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
             rtcEngine.setAudioProfile(Constants.AUDIO_PROFILE_SPEECH_STANDARD, Constants.AUDIO_SCENARIO_DEFAULT);
-            rtcEngine.joinChannel(null, channel, null, Utils.getUniqueInteger(firebaseAuth.getCurrentUser().getUid()));
+            rtcEngine.joinChannel(null, channel, null, 0);
         });
         broadcastSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             isBroadcaster = isChecked;
@@ -113,6 +117,15 @@ public class AudioBroadcastFragment extends Fragment {
                 broadcastSwitchText.setText(R.string.channelwide_broadcast);
             } else {
                 broadcastSwitchText.setText("Receiving mode");
+            }
+        }));
+
+        emergencyChannel.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            isEmergencyChannel = isChecked;
+            if (isChecked) {
+                channelName.setEnabled(false);
+            } else {
+                channelName.setEnabled(true);
             }
         }));
 

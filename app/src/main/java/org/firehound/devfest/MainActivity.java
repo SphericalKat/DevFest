@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,10 +25,21 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private static final String FIRST_START = "org.firehound.devfest.FIRST_START";
     public static final int REQ_CODE = 1;
-    private List<String> admins = new ArrayList<>();
+    public static List<String> admins = new ArrayList<>();
     public static RtcEngine rtcEngine;
     private FirebaseAuth firebaseAuth;
     private boolean isAdmin;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.signout:
+                firebaseAuth.signOut();
+                startActivityForResult(new Intent(this, MainIntroActivity.class), REQ_CODE);
+                return true;
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +65,18 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainIntroActivity.class);
             startActivityForResult(intent, REQ_CODE);
         } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new AudioBroadcastFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit();
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
 
+
         //BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_menu);
-        bottomNavigationView.setSelectedItemId(R.id.nav_audio);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             android.support.v4.app.Fragment selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.nav_home:
+                    selectedFragment = new HomeFragment();
                     break;
                 case R.id.nav_audio:
                     if (admins.contains(firebaseAuth.getCurrentUser().getUid())) {
@@ -88,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQ_CODE) {
             if (resultCode == RESULT_OK) {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(FIRST_START, false).apply();
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new AudioBroadcastFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit();
             } else {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(FIRST_START, true).apply();
                 finish();

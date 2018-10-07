@@ -81,24 +81,29 @@ public class VideoBroadcastFragment extends Fragment {
         //rtcEngine.setClientRole(Constants.CLIENT_ROLE_BROADCASTER);
         rtcEngine.enableVideo();
         setVideoProfile();
-        rtcEngine.switchCamera();
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_video_nav, container, false);
         FloatingActionButton connectButton = view.findViewById(R.id.connect_video);
         FloatingActionButton disconnectButton = view.findViewById(R.id.disconnect_video);
+        FloatingActionButton flipCamera = view.findViewById(R.id.flip_camera);
         FrameLayout videoContainer = view.findViewById(R.id.video_container);
         disconnectButton.setOnClickListener(l -> {
             rtcEngine.leaveChannel();
             videoContainer.removeAllViews();
         });
         connectButton.setOnClickListener(l ->{
+            if (!MainActivity.admins.contains(currentUser.getUid())) {
+                Toast.makeText(fragmentActivity, "You are not authorized to stream video.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             SurfaceView surfaceView = RtcEngine.CreateRendererView(getActivity().getBaseContext());
             surfaceView.setZOrderMediaOverlay(true);
             videoContainer.addView(surfaceView);
             rtcEngine.setupLocalVideo(new VideoCanvas(surfaceView, VideoCanvas.RENDER_MODE_FIT, 0));
             rtcEngine.joinChannel(null, "1000", "Extra data", 0);
         });
+        flipCamera.setOnClickListener(l -> rtcEngine.switchCamera());
 
 
 
